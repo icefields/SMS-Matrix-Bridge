@@ -41,6 +41,14 @@
             android:layout_height="wrap_content"
             android:text="Receive only (SMS → Matrix)"
             android:checked="true"
+            android:layout_marginBottom="8dp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_multi_room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Multi-room mode (per-contact rooms)"
+            android:checked="false"
             android:layout_marginBottom="16dp" />
 
         <TextView
@@ -74,7 +82,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Room ID"
+            android:text="Room ID (main/fallback room)"
             android:textStyle="bold" />
 
         <EditText
@@ -83,7 +91,41 @@
             android:layout_height="wrap_content"
             android:hint="!xxx:example.com"
             android:inputType="text"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/label_space_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Space ID (SMS space)"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/edit_space_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="!xxx:example.com"
+            android:inputType="text"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_create_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create SMS Space"
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_contact_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_save"
@@ -107,7 +149,7 @@
             android:background="#1a1a1a"
             android:padding="12dp"
             android:layout_marginTop="8dp"
-            android:text="Modes:\n\n• Receive only — incoming SMS are forwarded to Matrix. No foreground service needed.\n\n• Full bridge — also listen for !sms commands from Matrix to send SMS. Requires foreground service.\n\nUsage:\n• Incoming SMS appear as:\n  📱 SMS from +1234567890:\n  Hello world\n\n• To send SMS from Matrix:\n  !sms +1234567890 Your message" />
+            android:text="Modes:\n\n• Receive only — incoming SMS are forwarded to Matrix. No foreground service needed.\n\n• Full bridge — also listen for Matrix messages to send SMS. Requires foreground service.\n\n• Multi-room — each contact gets their own Matrix room inside an SMS space. Type directly in a contact's room to send SMS (no !sms prefix needed in multi-room).\n\nUsage (single-room):\n• Incoming SMS: 📱 SMS from +1234567890:\n  Hello world\n• To send SMS: !sms +1234567890 Your message\n\nUsage (multi-room):\n• Incoming SMS appear in the sender's per-contact room\n• Type any message in a contact room to send it as SMS\n• !sms commands still work in the main room as fallback" />
 
     </LinearLayout>
 </ScrollView>

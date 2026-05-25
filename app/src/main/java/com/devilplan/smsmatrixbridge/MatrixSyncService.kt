@@ -12,7 +12,9 @@ import kotlinx.coroutines.*
 
 /**
  * Foreground service that long-polls Matrix /sync for incoming messages.
- * When a message with "!sms" prefix is found, sends it as SMS.
+ * In multi-room mode: syncs all contact rooms — messages in contact rooms
+ * are sent directly as SMS (no !sms prefix needed).
+ * In single-room mode: only syncs the main room for !sms commands.
  */
 class MatrixSyncService : Service() {
 
@@ -50,7 +52,6 @@ class MatrixSyncService : Service() {
 
         syncJob?.cancel()
         syncJob = serviceScope.launch {
-            // Fetch own user ID first so we can skip our own messages
             val matrixClient = MatrixClient(this@MatrixSyncService)
             matrixClient.getUserId()
 

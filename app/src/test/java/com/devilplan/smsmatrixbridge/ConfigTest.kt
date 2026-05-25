@@ -187,4 +187,118 @@ class ConfigTest {
         Config.roomId = "!room:example.com"
         assertTrue(Config.isConfigured())
     }
+
+    // --- Multi-room configuration ---
+
+    @Test
+    fun `isMultiRoomConfigured returns true when multiRoom enabled and spaceId set`() {
+        Config.multiRoom = true
+        Config.spaceId = "!space:example.com"
+        assertTrue(Config.isMultiRoomConfigured())
+    }
+
+    @Test
+    fun `isMultiRoomConfigured returns false when multiRoom disabled`() {
+        Config.multiRoom = false
+        Config.spaceId = "!space:example.com"
+        assertFalse(Config.isMultiRoomConfigured())
+    }
+
+    @Test
+    fun `isMultiRoomConfigured returns false when spaceId empty`() {
+        Config.multiRoom = true
+        Config.spaceId = ""
+        assertFalse(Config.isMultiRoomConfigured())
+    }
+
+    @Test
+    fun `isMultiRoomConfigured returns false when both disabled`() {
+        Config.multiRoom = false
+        Config.spaceId = ""
+        assertFalse(Config.isMultiRoomConfigured())
+    }
+
+    @Test
+    fun `isMultiRoomConfigured returns false when spaceId is whitespace`() {
+        Config.multiRoom = true
+        Config.spaceId = "   "
+        assertFalse(Config.isMultiRoomConfigured())
+    }
+
+    @Test
+    fun `save persists multiRoom and spaceId`() {
+        Config.homeserverUrl = "https://matrix.example.com"
+        Config.accessToken = "token"
+        Config.roomId = "!room:example.com"
+        Config.multiRoom = true
+        Config.spaceId = "!space:example.com"
+
+        Config.save(mockContext)
+
+        verify(mockEditor).putBoolean("multi_room", true)
+        verify(mockEditor).putString("space_id", "!space:example.com")
+    }
+
+    @Test
+    fun `load defaults multiRoom to false and spaceId to empty`() {
+        `when`(mockPrefs.getString("homeserver_url", "")).thenReturn("")
+        `when`(mockPrefs.getString("access_token", "")).thenReturn("")
+        `when`(mockPrefs.getString("room_id", "")).thenReturn("")
+        `when`(mockPrefs.getBoolean("enabled", false)).thenReturn(false)
+        `when`(mockPrefs.getBoolean("receive_only", true)).thenReturn(true)
+        `when`(mockPrefs.getString("since_batch", null)).thenReturn(null)
+        `when`(mockPrefs.getBoolean("multi_room", false)).thenReturn(false)
+        `when`(mockPrefs.getString("space_id", "")).thenReturn("")
+
+        Config.load(mockContext)
+
+        assertFalse(Config.multiRoom)
+        assertEquals("", Config.spaceId)
+    }
+
+    // --- sinceBatch persistence edge cases ---
+
+    @Test
+    fun `sinceBatch null is preserved after load`() {
+        `when`(mockPrefs.getString("since_batch", null)).thenReturn(null)
+
+        Config.load(mockContext)
+
+        assertNull(Config.sinceBatch)
+    }
+
+    @Test
+    fun `sinceBatch empty string is treated as null after load`() {
+        `when`(mockPrefs.getString("since_batch", null)).thenReturn("")
+
+        Config.load(mockContext)
+
+        // Empty string should be treated as null to prevent invalid sync URL
+        assertNull(Config.sinceBatch)
+    }
+
+    @Test
+    fun `sinceBatch valid token is preserved after load`() {
+        `when`(mockPrefs.getString("since_batch", null)).thenReturn("s12345_67890")
+
+        Config.load(mockContext)
+
+        assertEquals("s12345_67890", Config.sinceBatch)
+    }
+
+    @Test
+    fun `sinceBatch null saves as empty string`() {
+        Config.sinceBatch = null
+        Config.save(mockContext)
+
+        verify(mockEditor).putString("since_batch", "")
+    }
+
+    @Test
+    fun `sinceBatch valid token saves correctly`() {
+        Config.sinceBatch = "s12345_67890"
+        Config.save(mockContext)
+
+        verify(mockEditor).putString("since_batch", "s12345_67890")
+    }
 }
