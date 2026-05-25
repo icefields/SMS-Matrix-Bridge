@@ -1,6 +1,6 @@
 # SMS ↔ Matrix Bridge
 
-A lightweight, fully open-source Android app that bridges your phone's SMS messages to a Matrix room — and back. No middleman server, no cloud dependency. Your phone talks directly to your Matrix homeserver over HTTPS.
+A lightweight, fully open-source Android app that bridges your phone's SMS messages to a Matrix room and back. No middleman server, no cloud dependency. Your phone talks directly to your Matrix homeserver over HTTPS.
 
 ---
 
@@ -33,21 +33,16 @@ A lightweight, fully open-source Android app that bridges your phone's SMS messa
 
 ---
 
-## What Does This App Do? (For Non-Developers)
-
-Imagine you're at your computer, chatting on Matrix (a decentralized, privacy-respecting chat protocol), and your phone buzzes with an SMS text message. Normally, you'd have to pick up your phone, read it, type a reply on the tiny screen, and put it back down.
-
-**This app eliminates that.** Here's what happens:
+## What Does This App Do?
 
 1. **Someone sends you an SMS** → The app intercepts it and posts it to a Matrix room you choose. You see it on your computer, tablet, or any device connected to Matrix.
 
 2. **You reply from Matrix** → Type `!sms +1234567890 Your reply here` in that Matrix room → The app picks it up and sends it as an SMS from your phone.
 
 **Key points:**
-- Your phone must be on and connected to the internet for the bridge to work (it's your phone sending/receiving, the app just bridges the messages).
 - No third-party server is involved. Your phone talks directly to your Matrix homeserver.
 - The app runs in the background on your phone. It uses very little battery in receive-only mode.
-- You need a Matrix account — it can be on any homeserver, including one you self-host.
+- You need a Matrix account, it can be on any homeserver, including one you self-host.
 
 **Two modes:**
 - **Receive-only (default):** SMS → Matrix only. Low battery impact. No foreground service needed.
@@ -58,9 +53,9 @@ Imagine you're at your computer, chatting on Matrix (a decentralized, privacy-re
 ## Getting Started — Step by Step Setup Guide
 
 You need three pieces of information to configure the app:
-1. **Homeserver URL** — the address of your Matrix server
-2. **Access Token** — a secret key that lets the app authenticate as a Matrix user
-3. **Room ID** — the internal ID of the Matrix room where SMS messages will appear
+1. **Homeserver URL** - the address of your Matrix server
+2. **Access Token** - a secret key that lets the app authenticate as a Matrix user
+3. **Room ID** - the internal ID of the Matrix room where SMS messages will appear
 
 ### Step 1: Create a Matrix Account for the Bridge
 
@@ -492,48 +487,48 @@ After sending, the bridge confirms in the room:
 ┌──────────────────────────────────────────────────────────────────┐
 │                         ANDROID PHONE                            │
 │                                                                  │
-│  ┌──────────┐    SMS_RECEIVED    ┌──────────────┐               │
+│  ┌──────────┐    SMS_RECEIVED    ┌──────────────┐                │
 │  │  Android  │─────────────────► │  SmsReceiver  │               │
-│  │   SMS     │   (BroadcastReceiver)              │               │
+│  │   SMS     │   (BroadcastReceiver)              │              │
 │  │  System   │                   └──────┬────────┘               │
 │  └──────────┘                          │                         │
-│                                  sendSmsNotice()                  │
+│                                  sendSmsNotice()                 │
 │                                        │                         │
 │                                        ▼                         │
-│                                ┌──────────────┐                   │
-│                                │ MatrixClient  │                   │
-│                                │  (OkHttp)     │                   │
-│                                └──────┬────────┘                   │
-│                                       │ PUT /send                  │
-│  ┌──────────┐    sendTextMessage()    │                             │
-│  │  SmsSender│◄──────────────────────┤                             │
-│  │  (SmsManager)                      │                             │
-│  └─────┬────┘                         │                             │
-│        │                              │                             │
-└────────┼──────────────────────────────┼─────────────────────────────┘
+│                                ┌──────────────┐                  │
+│                                │ MatrixClient  │                 │
+│                                │  (OkHttp)     │                 │
+│                                └──────┬────────┘                 │
+│                                       │ PUT /send                │
+│  ┌────────────┐    sendTextMessage()  │                          │
+│  │  SmsSender │◄──────────────────────┤                          │
+│  │  (SmsManager)                      │                          │
+│  └─────┬──────┘                       │                          │
+│        │                              │                          │
+└────────┼──────────────────────────────┼──────────────────────────┘
          │                              │
     SMS to recipient            HTTPS to Matrix homeserver
          │                              │
          ▼                              ▼
-   ┌──────────┐               ┌──────────────────┐
-   │  Carrier  │               │  Matrix Room      │
-   │  Network  │               │  (!xxx:example.com)│
-   └──────────┘               └────────┬──────────┘
+   ┌──────────┐               ┌────────────────────┐
+   │  Carrier │               │  Matrix Room       │
+   │  Network │               │  (!xxx:example.com)│
+   └──────────┘               └────────┬───────────┘
                                         │
                                         │ Long-poll /sync
                                         │ (30s timeout)
                                         ▼
-                               ┌──────────────────┐
+                               ┌───────────────────┐
                                │ MatrixSyncService │
                                │ (Foreground Svc)  │
-                               └────────┬─────────┘
+                               └────────┬──────────┘
                                         │
                                Parse "!sms" commands
                                         │
                                         ▼
                                ┌──────────────────┐
-                               │   SmsSender       │
-                               │  (SmsManager)     │
+                               │   SmsSender      │
+                               │  (SmsManager)    │
                                └──────────────────┘
 ```
 
