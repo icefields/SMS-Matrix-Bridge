@@ -54,10 +54,14 @@ class MatrixSyncService : Service() {
             val matrixClient = MatrixClient(this@MatrixSyncService)
             matrixClient.getUserId()
 
-            var sinceBatch: String? = null
+            var sinceBatch: String? = Config.sinceBatch
 
-            // Initial sync — skip historical messages
-            sinceBatch = matrixClient.pollForMessages(null)
+            // If no saved batch token, do initial sync to get one (skips historical events)
+            if (sinceBatch == null) {
+                sinceBatch = matrixClient.pollForMessages(null)
+                Config.sinceBatch = sinceBatch
+                Config.save(this@MatrixSyncService)
+            }
 
             while (isActive) {
                 // Re-check config in case user changed settings
@@ -69,6 +73,9 @@ class MatrixSyncService : Service() {
 
                 try {
                     sinceBatch = matrixClient.pollForMessages(sinceBatch)
+                    // Persist the batch token so cold starts resume from here
+                    Config.sinceBatch = sinceBatch
+                    Config.save(this@MatrixSyncService)
                 } catch (e: CancellationException) {
                     break
                 } catch (e: Exception) {

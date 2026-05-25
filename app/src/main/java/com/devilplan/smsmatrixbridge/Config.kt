@@ -15,12 +15,14 @@ object Config {
     private const val KEY_ROOM_ID = "room_id"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_RECEIVE_ONLY = "receive_only"
+    private const val KEY_SINCE_BATCH = "since_batch"
 
     @Volatile var homeserverUrl: String = ""
     @Volatile var accessToken: String = ""
     @Volatile var roomId: String = ""
     @Volatile var enabled: Boolean = false
     @Volatile var receiveOnly: Boolean = true
+    @Volatile var sinceBatch: String? = null
 
     private val lock = Any()
 
@@ -35,6 +37,7 @@ object Config {
             roomId = p.getString(KEY_ROOM_ID, "") ?: ""
             enabled = p.getBoolean(KEY_ENABLED, false)
             receiveOnly = p.getBoolean(KEY_RECEIVE_ONLY, true)
+            sinceBatch = p.getString(KEY_SINCE_BATCH, null)
         }
     }
 
@@ -46,6 +49,7 @@ object Config {
                 putString(KEY_ROOM_ID, roomId)
                 putBoolean(KEY_ENABLED, enabled)
                 putBoolean(KEY_RECEIVE_ONLY, receiveOnly)
+                putString(KEY_SINCE_BATCH, sinceBatch ?: "")
                 apply()
             }
         }
