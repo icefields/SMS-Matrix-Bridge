@@ -1,3 +1,6 @@
+#### Disclaimer: 
+This README was partially AI-generated (but reviewed by me). <br>**All** application code is human-written by the developer. <br>_NO AI-generated code contributions will be accepted._
+
 # SMS ↔ Matrix Bridge
 
 A lightweight, fully open-source Android app that bridges your phone's SMS messages to a Matrix room and back. No middleman server, no cloud dependency. Your phone talks directly to your Matrix homeserver over HTTPS.
