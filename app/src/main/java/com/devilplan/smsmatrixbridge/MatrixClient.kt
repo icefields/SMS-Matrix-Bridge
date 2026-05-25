@@ -121,6 +121,14 @@ class MatrixClient(private val context: Context) {
 
                 val nextBatch = json.get("next_batch")?.asString ?: return sinceBatch
 
+                // Only process events if this is NOT the initial sync.
+                // Initial sync (sinceBatch == null) returns recent history — processing it
+                // would re-send all previous !sms commands on every cold start.
+                if (sinceBatch == null) {
+                    Log.d(TAG, "Initial sync complete, got next_batch token. Skipping historical events.")
+                    return nextBatch
+                }
+
                 val rooms = json.getAsJsonObject("rooms") ?: return nextBatch
                 val join = rooms.getAsJsonObject("join") ?: return nextBatch
                 val roomData = join.getAsJsonObject(Config.roomId) ?: return nextBatch
