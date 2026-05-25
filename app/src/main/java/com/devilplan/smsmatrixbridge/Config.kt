@@ -2,7 +2,6 @@ package com.devilplan.smsmatrixbridge
 
 import android.content.Context
 import android.content.SharedPreferences
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Manages app configuration stored in SharedPreferences.
@@ -16,6 +15,8 @@ object Config {
     private const val KEY_ENABLED = "enabled"
     private const val KEY_RECEIVE_ONLY = "receive_only"
     private const val KEY_SINCE_BATCH = "since_batch"
+    private const val KEY_MULTI_ROOM = "multi_room"
+    private const val KEY_SPACE_ID = "space_id"
 
     @Volatile var homeserverUrl: String = ""
     @Volatile var accessToken: String = ""
@@ -23,6 +24,8 @@ object Config {
     @Volatile var enabled: Boolean = false
     @Volatile var receiveOnly: Boolean = true
     @Volatile var sinceBatch: String? = null
+    @Volatile var multiRoom: Boolean = false
+    @Volatile var spaceId: String = ""
 
     private val lock = Any()
 
@@ -37,7 +40,10 @@ object Config {
             roomId = p.getString(KEY_ROOM_ID, "") ?: ""
             enabled = p.getBoolean(KEY_ENABLED, false)
             receiveOnly = p.getBoolean(KEY_RECEIVE_ONLY, true)
-            sinceBatch = p.getString(KEY_SINCE_BATCH, null)
+            val storedBatch = p.getString(KEY_SINCE_BATCH, null)
+            sinceBatch = if (storedBatch.isNullOrEmpty()) null else storedBatch
+            multiRoom = p.getBoolean(KEY_MULTI_ROOM, false)
+            spaceId = p.getString(KEY_SPACE_ID, "") ?: ""
         }
     }
 
@@ -50,6 +56,8 @@ object Config {
                 putBoolean(KEY_ENABLED, enabled)
                 putBoolean(KEY_RECEIVE_ONLY, receiveOnly)
                 putString(KEY_SINCE_BATCH, sinceBatch ?: "")
+                putBoolean(KEY_MULTI_ROOM, multiRoom)
+                putString(KEY_SPACE_ID, spaceId)
                 apply()
             }
         }
@@ -57,4 +65,11 @@ object Config {
 
     fun isConfigured(): Boolean =
         homeserverUrl.isNotBlank() && accessToken.isNotBlank() && roomId.isNotBlank()
+
+    /**
+     * Check if multi-room mode is properly configured.
+     * Requires multiRoom enabled and a space ID set.
+     */
+    fun isMultiRoomConfigured(): Boolean =
+        multiRoom && spaceId.isNotBlank()
 }
