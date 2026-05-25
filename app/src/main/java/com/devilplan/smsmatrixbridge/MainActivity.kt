@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editHomeserver: EditText
     private lateinit var editAccessToken: EditText
     private lateinit var editRoomId: EditText
-    private lateinit var switchEnabled: Switch
+    private lateinit var switchEnabled: com.google.android.material.switchmaterial.SwitchMaterial
     private lateinit var checkboxReceiveOnly: CheckBox
     private lateinit var btnSave: Button
     private lateinit var btnTestConnection: Button
