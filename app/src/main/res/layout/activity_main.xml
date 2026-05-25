@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SMS ↔ Matrix Bridge"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable Bridge"
+            android:layout_marginBottom="8dp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_receive_only"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Receive only (SMS → Matrix)"
+            android:checked="true"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Homeserver URL"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_homeserver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="https://matrix.example.com"
+            android:inputType="textUri"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Access Token"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_access_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="syt_xxx..."
+            android:inputType="textPassword"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Room ID"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_room_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="!xxx:example.com"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save &amp; Apply"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_test_connection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Connection"
+            android:layout_marginBottom="16dp"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:background="#1a1a1a"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:text="Modes:\n\n• Receive only — incoming SMS are forwarded to Matrix. No foreground service needed.\n\n• Full bridge — also listen for !sms commands from Matrix to send SMS. Requires foreground service.\n\nUsage:\n• Incoming SMS appear as:\n  📱 SMS from +1234567890:\n  Hello world\n\n• To send SMS from Matrix:\n  !sms +1234567890 Your message" />
+
+    </LinearLayout>
+</ScrollView>
